@@ -1,12 +1,6 @@
-﻿using Frotcom.Challenge.Data.Models;
-using Frotcom.Challenge.Queue;
-using Frotcom.Challenge.Reverse.Geocoding;
+﻿using Frotcom.Challenge.Queue;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Frotcom.Challenge.SendTrackingDataWorker
@@ -23,6 +17,7 @@ namespace Frotcom.Challenge.SendTrackingDataWorker
                 {
                     serviceCollection.AddHostedService<BackgroundHostedService>();
 
+                    serviceCollection.AddScoped<IQueueProcessorFactory, QueueProcessorFactory>();
                 })
                 .RunConsoleAsync();
         }
