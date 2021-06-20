@@ -12,14 +12,18 @@ namespace Frotcom.Challenge.SendTrackingDataWorker
         /// </summary>
         public static async Task Main()
         {
-            await Host.CreateDefaultBuilder()
-                .ConfigureServices((hostBuilderContext, serviceCollection) => 
+            await CreateHostBuilder().RunConsoleAsync();
+        }
+
+        private static IHostBuilder CreateHostBuilder()
+        {
+            return Host
+                .CreateDefaultBuilder()
+                .ConfigureServices((hostBuilderContext, serviceCollection) =>
                 {
                     serviceCollection.AddHostedService<BackgroundHostedService>();
-
                     serviceCollection.AddScoped<IQueueProcessorFactory, QueueProcessorFactory>();
-                })
-                .RunConsoleAsync();
+                });
         }
     }
 }
