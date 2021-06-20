@@ -10,12 +10,12 @@ namespace Frotcom.Challenge.SendTrackingDataWorker
         /// <summary>
         /// FROTCOM CHALLENGE STARTS HERE
         /// </summary>
-        public static async Task Main()
+        public static async Task Main(string[] args)
         {
-            await CreateHostBuilder().RunConsoleAsync();
+            await CreateHostBuilder(args).RunConsoleAsync();
         }
 
-        private static IHostBuilder CreateHostBuilder()
+        private static IHostBuilder CreateHostBuilder(string[] args)
         {
             return Host
                 .CreateDefaultBuilder()
