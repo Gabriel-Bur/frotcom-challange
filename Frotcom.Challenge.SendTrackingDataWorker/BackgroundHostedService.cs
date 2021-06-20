@@ -6,46 +6,36 @@ using System.Threading.Tasks;
 
 namespace Frotcom.Challenge.SendTrackingDataWorker
 {
-    public class BackgroundHostedService : IHostedService
+    public class BackgroundHostedService : BackgroundService
     {
         private readonly IQueueProcessorFactory _processorFacotry;
-        private readonly IHostApplicationLifetime _applicationLifetime;
         private QueueProcessorHost _processorHost;
 
         public BackgroundHostedService(
-            IQueueProcessorFactory processorFactory, 
-            IHostApplicationLifetime applicationLifetime)
+            IQueueProcessorFactory processorFactory)
         {
             _processorFacotry = processorFactory;
-            _applicationLifetime = applicationLifetime;
         }
 
-        public Task StartAsync(CancellationToken cancellationToken)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _applicationLifetime.ApplicationStarted.Register(async () =>
+            while (!stoppingToken.IsCancellationRequested)
             {
-                while (!cancellationToken.IsCancellationRequested)
+                if (_processorHost == null)
                 {
-                    if (_processorHost == null)
-                    {
-                        _processorHost = new QueueProcessorHost(_processorFacotry, 10, 100);
-                        await _processorHost.Run();
-                    }
+                    _processorHost = new QueueProcessorHost(_processorFacotry, 1, 5);
+                    await _processorHost.Run();
                 }
-            });
-
-            _applicationLifetime.ApplicationStopped.Register(() =>
-            {
-                Console.WriteLine("Stopping service");
-                _processorHost.Stop();
-            });
-
-            return Task.CompletedTask;
+            }
         }
 
-        public Task StopAsync(CancellationToken cancellationToken)
+
+        public override Task StopAsync(CancellationToken cancellationToken)
         {
-            return Task.CompletedTask;
+            Console.WriteLine("Stopping process");
+            _processorHost.Stop();
+            return base.StopAsync(cancellationToken);
         }
+
     }
 }
