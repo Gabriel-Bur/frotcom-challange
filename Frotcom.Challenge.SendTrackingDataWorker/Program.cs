@@ -23,6 +23,7 @@ namespace Frotcom.Challenge.SendTrackingDataWorker
                 {
                     serviceCollection.AddHostedService<BackgroundHostedService>();
                     serviceCollection.AddScoped<IQueueProcessorFactory, QueueProcessorFactory>();
+                    serviceCollection.AddSingleton<PacketCounterSingleton>();
                 });
         }
     }

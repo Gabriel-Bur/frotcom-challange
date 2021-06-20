@@ -19,12 +19,17 @@ namespace Frotcom.Challenge.SendTrackingDataWorker
             {
                 int packetsCount = packets.Count();
 
+                PacketCounterSingleton.Instance.Total += packetsCount;
+
                 foreach (var packet in packets)
                 {
                     var country = await reverseGeocoding.GetCountry(packet.Latitude, packet.Longitude);
 
                     if (country == Country.Portugal)
+                    {
                         PrintPacket(packet.VehicleId, packetsCount);
+                        PacketCounterSingleton.Instance.TotalInPortugal++;
+                    }
                 }
 
             }, cancellationToken);
