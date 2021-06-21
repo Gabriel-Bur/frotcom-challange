@@ -4,14 +4,14 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Frotcom.Challenge.SendTrackingDataWorker
+namespace Frotcom.Challenge.SendTrackingDataWorker.BackgroundServices
 {
-    public class BackgroundHostedService : BackgroundService
+    public class QueueBackgroundService : BackgroundService
     {
         private readonly IQueueProcessorFactory _processorFacotry;
         private QueueProcessorHost _processorHost;
 
-        public BackgroundHostedService(
+        public QueueBackgroundService(
             IQueueProcessorFactory processorFactory)
         {
             _processorFacotry = processorFactory;
@@ -23,12 +23,11 @@ namespace Frotcom.Challenge.SendTrackingDataWorker
             {
                 if (_processorHost == null)
                 {
-                    _processorHost = new QueueProcessorHost(_processorFacotry, 1, 5);
+                    _processorHost = new QueueProcessorHost(_processorFacotry, 10, 100);
                     await _processorHost.Run();
                 }
             }
         }
-
 
         public override Task StopAsync(CancellationToken cancellationToken)
         {
@@ -36,6 +35,5 @@ namespace Frotcom.Challenge.SendTrackingDataWorker
             _processorHost.Stop();
             return base.StopAsync(cancellationToken);
         }
-
     }
 }

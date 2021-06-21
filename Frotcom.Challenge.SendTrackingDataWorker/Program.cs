@@ -1,4 +1,5 @@
 ﻿using Frotcom.Challenge.Queue;
+using Frotcom.Challenge.SendTrackingDataWorker.BackgroundServices;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Threading.Tasks;
@@ -10,20 +11,22 @@ namespace Frotcom.Challenge.SendTrackingDataWorker
         /// <summary>
         /// FROTCOM CHALLENGE STARTS HERE
         /// </summary>
-        public static async Task Main(string[] args)
+        public static async Task Main()
         {
-            await CreateHostBuilder(args).RunConsoleAsync();
+            await CreateHostBuilder().RunConsoleAsync();
         }
 
-        private static IHostBuilder CreateHostBuilder(string[] args)
+        private static IHostBuilder CreateHostBuilder()
         {
             return Host
                 .CreateDefaultBuilder()
                 .ConfigureServices((hostBuilderContext, serviceCollection) =>
                 {
-                    serviceCollection.AddHostedService<BackgroundHostedService>();
+                    serviceCollection.AddHostedService<QueueBackgroundService>();
+                    serviceCollection.AddHostedService<TimedBackgroundService>();
+
                     serviceCollection.AddScoped<IQueueProcessorFactory, QueueProcessorFactory>();
-                    serviceCollection.AddSingleton<PacketCounterSingleton>();
+                    serviceCollection.AddSingleton<CounterSingleton>();
                 });
         }
     }

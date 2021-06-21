@@ -19,7 +19,7 @@ namespace Frotcom.Challenge.SendTrackingDataWorker
             {
                 int packetsCount = packets.Count();
 
-                PacketCounterSingleton.Instance.Total += packetsCount;
+                CounterSingleton.Instance.Total += packetsCount;
 
                 foreach (var packet in packets)
                 {
@@ -27,8 +27,8 @@ namespace Frotcom.Challenge.SendTrackingDataWorker
 
                     if (country == Country.Portugal)
                     {
+                        CounterSingleton.Instance.TotalInPortugal++;
                         PrintPacket(packet.VehicleId, packetsCount);
-                        PacketCounterSingleton.Instance.TotalInPortugal++;
                     }
                 }
 
